@@ -1,0 +1,30 @@
+{
+  "name": "sout",
+  "version": "1.0.0",
+  "description": "An AI-powered app that detects your mood and recommends halal nasheeds — spiritual, non-instrumental Arabic and English melodies — to soothe, uplift, and inspire you in a faith-aligned way.",
+  "homepage": "https://github.com/Asadullah-byte/sout#readme",
+  "bugs": {
+    "url": "https://github.com/Asadullah-byte/sout/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Asadullah-byte/sout.git"
+  },
+  "license": "ISC",
+  "author": "Asadullah",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.5.1",
+    "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "http": "^0.0.1-security",
+    "nodemon": "^3.1.10"
+  }
+}
