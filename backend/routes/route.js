@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { takeInput } from "../controllers/moodController.js";
+import { handleInput, handleLogin,handleCallback } from "../controllers/moodController.js";
 
 const router = Router();
 
-router.get("/input-mood", takeInput);
+router.get("/login", handleLogin)
+router.get("/callback", handleCallback)
+router.post("/input", handleInput);
 
 
 export default router;
