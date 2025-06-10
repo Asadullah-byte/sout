@@ -1,6 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import User from "../models/userSchema.js";
+import { getValidAccessToken } from "../utils/spotify.js";
 
 dotenv.config();
 
@@ -69,9 +70,11 @@ export const handleCallback = async (req, res) => {
       },
     });
   } catch (err) {
-    res
-      .status(err.status || 500)
-      .json({ success: false, message: err.message });
+    console.error("Error in /callback:", err.response?.data || err.message);
+    res.status(500).json({
+      success: false,
+      message: err.response?.data || err.message,
+    });
   }
 };
 
@@ -103,6 +106,43 @@ export const handleInput = async (req, res) => {
     });
   } catch (err) {
     console.error("Error", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const handleGetNasheeds = async (req, res) => {
+  const { spotifyId, emotions } = req.body;
+
+  if (!spotifyId) return res.status(400).json("Missing spotifyId");
+  if (!Array.isArray(emotions) || emotions.length === 0)
+    return res.status(400).json("No emotion defined");
+
+  try {
+    const accessToken = await getValidAccessToken(spotifyId);
+    const searchQueries = emotions.map((emotion) => `${emotion} nasheeds`);
+    const query = searchQueries[0];
+
+    const response = await axios.get("https://api.spotify.com/v1/search", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        q: query,
+        type: "track",
+        limit: 10,
+        market: "PK", // or leave out if targeting global results
+      },
+    });
+    const tracks = response.data.tracks.items.map((track) => ({
+      name: track.name,
+      artist: track.artists?.[0]?.name,
+      url: track.external_urls?.spotify,
+      albumArt: track.album?.images?.[0]?.url,
+    }));
+
+    res.status(200).json({ success: true, tracks });
+  } catch (err) {
+    console.error("Error in /api/nasheeds:", err.response?.data || err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 };
